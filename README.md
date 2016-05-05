@@ -6,7 +6,7 @@ Those extensions for **Xamarin.Forms** basicaly add storage of the navigation hi
 
 ## Installation
 
-The library **will** be available soon on [NuGet](https://www.nuget.org/packages/Xamarin.Forms.NavigationExtensions/).
+The library is available on [NuGet](https://www.nuget.org/packages/Xamarin.Forms.NavigationExtensions/).
 
 To install NavigationExtensions, run the following command in the Package Manager Console.
 
