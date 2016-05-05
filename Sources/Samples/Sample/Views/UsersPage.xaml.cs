@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sample.Navigation;
 using Xamarin.Forms;
 
-namespace Sample.Navigation
+namespace Sample
 {
-	public partial class HomePage : ContentPage
+	public partial class UsersPage : ContentPage
 	{
-		public HomePage()
+		public UsersPage()
 		{
-			this.BindingContext = new HomeViewModel(Locator.Service);
+			this.BindingContext = new UsersViewModel(Locator.Service);
 
 			InitializeComponent();
 		}
@@ -21,9 +22,9 @@ namespace Sample.Navigation
 
 			try
 			{
-				var vm = this.BindingContext as HomeViewModel;
+				var vm = this.BindingContext as UsersViewModel;
 				await vm.Update();
-				this.Title = "Albums";
+				this.Title = "Users";
 			}
 			catch (Exception ex)
 			{
@@ -33,8 +34,8 @@ namespace Sample.Navigation
 
 		private void OnItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
 		{
-			var item = e.Item as Album;
-			this.Navigation.PushAsync<AlbumPage>(item.Identifier, true);
+			var item = e.Item as User;
+			this.Navigation.PushAsync<UserPage>(item.Identifier, true);
 		}
 	}
 }

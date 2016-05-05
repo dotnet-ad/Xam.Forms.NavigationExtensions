@@ -6,9 +6,9 @@ using GalaSoft.MvvmLight;
 
 namespace Sample.Navigation
 {
-	public class HomeViewModel : ViewModelBase
+	public class AlbumsViewModel : ViewModelBase
 	{
-		public HomeViewModel(IService service)
+		public AlbumsViewModel(IService service)
 		{
 			this.service = service;
 			this.Albums = new List<Album>();
