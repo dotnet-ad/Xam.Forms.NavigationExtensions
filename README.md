@@ -56,6 +56,10 @@ var albumId = (int) this.GetNavigationArgs();
 
 A complete application sample is available in the source code solution.
 
+## Build and publish
+
+Publishing is done through [Visual Studio Team Services](https://alois-deniel.visualstudio.com/)  with a manual trigger.
+
 ## Roadmap / ideas
 
 * Add more helpers for selected tab item, scrolling amount, textfield
