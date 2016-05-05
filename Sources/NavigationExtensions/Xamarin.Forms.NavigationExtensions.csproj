@@ -29,7 +29,6 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="MyPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NavigationExtensions.cs" />
   </ItemGroup>
