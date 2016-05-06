@@ -92,8 +92,8 @@
     <Reference Include="GalaSoft.MvvmLight.Extras">
       <HintPath>..\..\packages\MvvmLightLibs.5.3.0.0\lib\portable-net45+wp8+wpa81+netcore45+monoandroid1+xamarin.ios10\GalaSoft.MvvmLight.Extras.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.Forms.NavigationExtensions">
-      <HintPath>..\..\NavigationExtensions\bin\Release\Xamarin.Forms.NavigationExtensions.dll</HintPath>
+    <Reference Include="Xam.Forms.NavigationExtensions">
+      <HintPath>..\..\NavigationExtensions\bin\Release\Xam.Forms.NavigationExtensions.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

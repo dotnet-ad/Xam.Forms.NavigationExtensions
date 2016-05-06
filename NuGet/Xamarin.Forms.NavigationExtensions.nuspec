@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
    <metadata minClientVersion="2.8.1">
-       <id>Xamarin.Forms.NavigationExtensions</id>
+       <id>Xam.Forms.NavigationExtensions</id>
        <version>$version$</version>
        <title>Navigation extensions for Xamarin.Forms</title>
        <authors>Aloïs Deniel</authors>
