@@ -4,9 +4,10 @@
 	using System.Collections.Generic;
 	using System.Runtime.CompilerServices;
 	using System.Threading.Tasks;
-	using Xamarin.Forms;
 	using System.Linq;
 	using Newtonsoft.Json;
+	using Xamarin.Forms.NavigationExt;
+
 
 	/// <summary>
 	/// Extensions for saving and restoring navigation states with arguments.
@@ -48,74 +49,6 @@
 
 		#region State restoration
 
-		/// <summary>
-		/// Represents a navigation state.
-		/// </summary>
-		public class StoredStates
-		{
-			public DateTime Date { get; set; }
-
-			public IEnumerable<State> Navigation { get; set; }
-
-			public IEnumerable<State> Modal { get; set; }
-		}
-
-		/// <summary>
-		/// Represents a navigation state.
-		/// </summary>
-		public class State
-		{
-			/// <summary>
-			/// Gets or sets the type of the page.
-			/// </summary>
-			/// <value>The type of the page.</value>
-			public Type PageType { get; set; }
-
-			/// <summary>
-			/// Gets or sets the type of the navigation argument.
-			/// </summary>
-			/// <value>The type of the argument.</value>
-			public Type ArgumentType { get; set; }
-
-			/// <summary>
-			/// Gets or sets the serialized argument.
-			/// </summary>
-			/// <value>The serialized argument.</value>
-			public string SerializedArgument { get; set; }
-
-			/// <summary>
-			/// Gets or sets the argument.
-			/// </summary>
-			/// <value>The argument.</value>
-			[JsonIgnore]
-			public object Argument
-			{
-				get
-				{
-					if (string.IsNullOrEmpty(this.SerializedArgument) || this.ArgumentType == null)
-					{
-						return null;
-					}
-
-					return JsonConvert.DeserializeObject(SerializedArgument, ArgumentType);
-				}
-				set
-				{
-					if (value != null)
-					{
-						this.ArgumentType = value.GetType();
-						this.SerializedArgument = JsonConvert.SerializeObject(value);
-					}
-					else
-					{
-						this.ArgumentType = null;
-						this.SerializedArgument = null;
-					}
-
-				}
-			}
-		}
-
 		private const string StoreKeyPrefix = "Navigation.";
 
 		/// <summary>
@@ -123,6 +56,8 @@
 		/// </summary>
 		/// <returns>The async.</returns>
 		/// <param name="navigation">Navigation.</param>
+		/// <param name="name">The base identifier of the stack.</param>
+		/// <param name="maximumRestoreSpan">The maximum time for navigation restoration.</param>
 		public static async Task RestoreAsync(this INavigation navigation, string name, TimeSpan maximumRestoreSpan)
 		{
 			var key = $"{StoreKeyPrefix}{name}";
@@ -130,39 +65,44 @@
 			if (Application.Current.Properties.ContainsKey(key))
 			{
 				var json = Application.Current.Properties[key] as string;
-				var states = JsonConvert.DeserializeObject<StoredStates>(json);
+				var states = JsonConvert.DeserializeObject<NavigationStates>(json);
 
 				if (DateTime.Now - states.Date < maximumRestoreSpan)
 				{
 					var navigationPages = states.Navigation.Select(RestorePage).ToList();
 					var modalPages = states.Modal.Select(RestorePage).ToList();
 
-					var initialPages = navigation.NavigationStack.ToList();
-
-					// 1. Restoring navigation stack
-					var lastNavigationPage = navigationPages.LastOrDefault();
-					navigationPages.RemoveAt(navigationPages.Count - 1);
-					await navigation.PushAsync(lastNavigationPage, false);
-					foreach (var page in navigationPages)
+					if (navigationPages.Count > 1)
 					{
-						navigation.InsertPageBefore(page, lastNavigationPage);
-					}
+						var initialPages = navigation.NavigationStack.ToList();
 
-					// 2. Removing already present pages before restore
-					foreach (var page in initialPages)
-					{
-						navigation.RemovePage(page);
-					}
-
-
-					//3. Restoring modal stack
-					foreach (var page in modalPages)
-					{
-						await navigation.PushModalAsync(page, false);
-						// HACK: lack of InsertPageBefore for modal stack
-						if (Device.OS == TargetPlatform.iOS)
+						// 1. Restoring navigation stack
+						var lastNavigationPage = navigationPages.LastOrDefault();
+						navigationPages.RemoveAt(navigationPages.Count - 1);
+						await navigation.PushAsync(lastNavigationPage, false);
+						foreach (var page in navigationPages)
 						{
-							await Task.Delay(100);
+							navigation.InsertPageBefore(page, lastNavigationPage);
+						}
+
+						// 2. Removing already present pages before restore
+						foreach (var page in initialPages)
+						{
+							navigation.RemovePage(page);
+						}
+					}
+
+					if (modalPages.Count > 0)
+					{
+						//3. Restoring modal stack
+						foreach (var page in modalPages)
+						{
+							await navigation.PushModalAsync(page, false);
+							// HACK: lack of InsertPageBefore for modal stack
+							if (Device.OS == TargetPlatform.iOS)
+							{
+								await Task.Delay(100);
+							}
 						}
 					}
 				}
@@ -174,9 +114,10 @@
 		/// </summary>
 		/// <param name="navigation">The navigation service.</param>
 		/// <param name="name">The name that will represents this navigation.</param>
+		/// <param name="name">The base identifier of the stack.</param>
 		public static void Store(this INavigation navigation, string name)
 		{
-			var states = new StoredStates()
+			var states = new NavigationStates()
 			{
 				Date = DateTime.Now,
 				Navigation = ConvertPages(navigation.NavigationStack),
@@ -192,7 +133,7 @@
 		/// </summary>
 		/// <returns>The page.</returns>
 		/// <param name="state">State.</param>
-		private static Page RestorePage(State state)
+		private static Page RestorePage(PageState state)
 		{
 			var page = Activator.CreateInstance(state.PageType) as Page;
 			var argument = state.Argument;
@@ -200,9 +141,9 @@
 			return page;
 		}
 			                                       
-		private static IEnumerable<State> ConvertPages(IEnumerable<Page> pages)
+		private static IEnumerable<PageState> ConvertPages(IEnumerable<Page> pages)
 		{
-			return pages.Select((p) => new State()
+			return pages.Select((p) => new PageState()
 			{
 				PageType = p.GetType(),
 				Argument = p.GetNavigationArgs(),
@@ -213,38 +154,120 @@
 
 		#region Navigation
 
+		/// <summary>
+		/// Navigates to the given page with an argument that will be available from this page, but also stored with the navigation state.
+		/// </summary>
+		/// <returns>The async.</returns>
+		/// <param name="navigation">The navigation service.</param>
+		/// <param name="page">The destination page.</param>
+		/// <param name="args">The navigation arguments.</param>
+		/// <param name="animated">Indicates whether the navigation should be animated.</param>
 		public static Task PushAsync(this INavigation navigation, Page page, object args, bool animated)
 		{
 			page.SetNavigationArgs(args);
 			return navigation.PushAsync(page, animated);
 		}
 
+		/// <summary>
+		/// Navigates modaly to the given page with an argument that will be available from this page, but also stored with the navigation state.
+		/// </summary>
+		/// <returns>The async.</returns>
+		/// <param name="navigation">The navigation service.</param>
+		/// <param name="page">The destination page.</param>
+		/// <param name="args">The navigation arguments.</param>
+		/// <param name="animated">Indicates whether the navigation should be animated.</param>
 		public static Task PushModalAsync(this INavigation navigation, Page page, object args, bool animated)
 		{
 			page.SetNavigationArgs(args);
 			return navigation.PushModalAsync(page, animated);
 		}
 
+		/// <summary>
+		/// Instanciates a page from its type(must have an empty constructor) and navigates to this page with an argument that will be available from this page, but also stored with the navigation state.
+		/// </summary>
+		/// <returns>The async.</returns>
+		/// <param name="navigation">The navigation service.</param>
+		/// <param name="pageType">The destination page type.</param>
+		/// <param name="args">The navigation arguments.</param>
+		/// <param name="animated">Indicates whether the navigation should be animated.</param>
 		public static Task PushAsync(this INavigation navigation, Type pageType, object args = null, bool animated = true)
 		{
 			var page = Activator.CreateInstance(pageType) as Page;
 			return navigation.PushAsync(page, args, animated);
 		}
 
+		/// <summary>
+		/// Instanciates a page from its type(must have an empty constructor) and navigates modaly to this page with an argument that will be available from this page, but also stored with the navigation state.
+		/// </summary>
+		/// <returns>The async.</returns>
+		/// <param name="navigation">The navigation service.</param>
+		/// <param name="pageType">The destination page type.</param>
+		/// <param name="args">The navigation arguments.</param>
+		/// <param name="animated">Indicates whether the navigation should be animated.</param>
 		public static Task PushModalAsync(this INavigation navigation, Type pageType, object args = null, bool animated = true)
 		{
 			var page = Activator.CreateInstance(pageType) as Page;
 			return navigation.PushAsync(page, args, animated);
 		}
 
+		/// <summary>
+		/// Instanciates a page from its type(must have an empty constructor) and navigates to this page with an argument that will be available from this page, but also stored with the navigation state.
+		/// </summary>
+		/// <returns>The async.</returns>
+		/// <param name="navigation">The navigation service.</param>
+		/// <param name="args">The navigation arguments.</param>
+		/// <param name="animated">Indicates whether the navigation should be animated.</param>
+		/// <typeparam name="T">The destination page type.</typeparam>
 		public static Task PushAsync<T>(this INavigation navigation, object args = null, bool animated = true) where T : Page
 		{
 			return navigation.PushAsync(typeof(T),args,animated);
 		}
 
+		/// <summary>
+		/// Instanciates a page from its type(must have an empty constructor) and navigates modaly to this page with an argument that will be available from this page, but also stored with the navigation state.
+		/// </summary>
+		/// <returns>The async.</returns>
+		/// <param name="navigation">The navigation service.</param>
+		/// <param name="args">The navigation arguments.</param>
+		/// <param name="animated">Indicates whether the navigation should be animated.</param>
+		/// <typeparam name="T">The destination page type.</typeparam>
 		public static Task PushModalAsync<T>(this INavigation navigation, object args = null, bool animated = true) where T : Page
 		{
 			return navigation.PushAsync(typeof(T), args, animated);
+		}
+
+		#endregion
+
+		#region Collection helpers
+
+		/// <summary>
+		/// Restores navigation state for each of the pages.
+		/// </summary>
+		/// <returns>The async.</returns>
+		/// <param name="pages">The pages.</param>
+		/// <param name="name">The base identifier of the stacks.</param>
+		/// <param name="maximumRestoreSpan">The maximum time for navigation restoration.</param>
+		public static async Task RestoreAsync(this IList<Page> pages, string name, TimeSpan maximumRestoreSpan)
+		{
+			for (int i = 0; i < pages.Count(); i++)
+			{
+				var page = pages.ElementAt(i);
+				await page.Navigation.RestoreAsync($"{name}.Tab[{i}]", maximumRestoreSpan);
+			}
+		}
+
+		/// <summary>
+		/// Stores navigation state for each of the pages.
+		/// </summary>
+		/// <param name="pages">The pages.</param>
+		/// <param name="name">The base identifier of the stacks.</param>
+		public static void Store(this IList<Page> pages, string name)
+		{
+			for (int i = 0; i < pages.Count(); i++)
+			{
+				var page = pages.ElementAt(i);
+				 page.Navigation.Store($"{name}.Tab[{i}]");
+			}
 		}
 
 		#endregion
