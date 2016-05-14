@@ -14,7 +14,6 @@
        <summary>Those extensions for Xamarin.Forms basicaly add storage of the navigation history when the application stops. Extensions has been prefered to subclassing for more flexibility.</summary>
      <tags>xamarin, pcl, xam.pcl, navigation, winrt, android, xamarin.forms, ios</tags>
        <dependencies>
-          <dependency id="Newtonsoft.Json" version="8.0.3" />
           <dependency id="Xamarin.Forms" version="2.2.0.31" />
        </dependencies>
    </metadata>
