@@ -6,6 +6,7 @@
 	using System.Threading.Tasks;
 	using System.Linq;
 	using Xamarin.Forms.NavigationExt;
+	using Xamarin.Forms.NavigationExtensions;
 
 
 	/// <summary>
