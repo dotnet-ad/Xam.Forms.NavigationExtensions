@@ -1,7 +1,6 @@
 ﻿namespace Xamarin.Forms.NavigationExt
 {
 	using System;
-	using System.Runtime.Serialization;
 
 	/// <summary>
 	/// Represents a navigation state.

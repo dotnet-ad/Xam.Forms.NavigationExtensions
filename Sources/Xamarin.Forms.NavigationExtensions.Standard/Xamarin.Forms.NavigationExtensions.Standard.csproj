@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AssemblyName>Xam.Forms.NavigationExtensions</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="2.4.0.282" />
+  </ItemGroup>
+  <Import Project="..\Xamarin.Forms.NavigationExtensions.Shared\Xamarin.Forms.NavigationExtensions.Shared.projitems" Label="Shared" Condition="Exists('..\Xamarin.Forms.NavigationExtensions.Shared\Xamarin.Forms.NavigationExtensions.Shared.projitems')" />
+</Project>

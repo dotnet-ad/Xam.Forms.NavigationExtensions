@@ -14,10 +14,11 @@
        <summary>Those extensions for Xamarin.Forms basicaly add storage of the navigation history when the application stops. Extensions has been prefered to subclassing for more flexibility.</summary>
      <tags>xamarin, pcl, xam.pcl, navigation, winrt, android, xamarin.forms, ios</tags>
        <dependencies>
-          <dependency id="Xamarin.Forms" version="2.2.0.31" />
+          <dependency id="Xamarin.Forms" version="2.4.0.282" />
        </dependencies>
    </metadata>
    <files>
      <file src="..\Sources\NavigationExtensions\bin\Release\Xam.Forms.NavigationExtensions.dll" target="lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xam.Forms.NavigationExtensions.dll" />
+     <file src="..\Sources\NavigationExtensions.Standard\bin\Release\netstandard1.3\Xam.Forms.NavigationExtensions.dll" target="lib\netstandard1.3\Xam.Forms.NavigationExtensions.dll" />
    </files>
 </package>
