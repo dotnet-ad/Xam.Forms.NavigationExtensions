@@ -24,17 +24,13 @@ namespace Sample
 		protected override async void OnStart()
 		{
 			var tabbedPage = this.MainPage as TabbedPage;
-
-			await tabbedPage.Children[0].Navigation.RestoreAsync("Albums", RestorationTimeSpan);
-			await tabbedPage.Children[1].Navigation.RestoreAsync("Users", RestorationTimeSpan);
+			await tabbedPage.Children.RestoreAsync("Main", RestorationTimeSpan);
 		}
 
 		protected override void OnSleep()
 		{
 			var tabbedPage = this.MainPage as TabbedPage;
-
-			tabbedPage.Children[0].Navigation.Store("Albums");
-			tabbedPage.Children[1].Navigation.Store("Users");
+			tabbedPage.Children.Store("Main");
 		}
 
 		protected override void OnResume()
