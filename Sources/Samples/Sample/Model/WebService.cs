@@ -23,6 +23,10 @@ namespace Sample.Navigation
 
 		public const string PhotoPath = "photos/{0}";
 
+		public const string UsersPath = "users";
+
+		public const string UserPath = "users/{0}";
+
 		public Task<IEnumerable<Album>> GetAlbums()
 		{
 			return this.GetJson<IEnumerable<Album>>(AlbumsPath);
@@ -38,6 +42,16 @@ namespace Sample.Navigation
 			return this.GetJson<Photo>(string.Format(PhotoPath, photoId));
 		}
 
+		public Task<IEnumerable<User>> GetUsers()
+		{
+			return this.GetJson<IEnumerable<User>>(UsersPath);
+		}
+
+		public Task<User> GetUser(int userId)
+		{
+			return this.GetJson<User>(string.Format(UserPath, userId));
+		}
+
 		private async Task<T> GetJson<T>(string path)
 		{
 			var url = string.Format("{0}/{1}", EndPoint, path);
@@ -45,7 +59,6 @@ namespace Sample.Navigation
 			req.EnsureSuccessStatusCode();
 			var content = await req.Content.ReadAsStringAsync();
 			return JsonConvert.DeserializeObject<T>(content);
-
 		}
 	}
 }

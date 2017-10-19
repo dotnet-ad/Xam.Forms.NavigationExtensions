@@ -54,6 +54,10 @@ var albumId = (int) this.GetNavigationArgs();
 
 A complete application sample is available in the source code solution.
 
+## Roadmap / ideas
+
+* Add more helpers for selected tab item, scrolling amount, textfield
+
 ## Copyright and license
 
 Code and documentation copyright 2016 Aloïs Deniel released under the MIT license.

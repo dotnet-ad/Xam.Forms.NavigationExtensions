@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="Sample.UserPage">
+	<StackLayout>
+		<Label Text="{Binding Name}" FontSize="25" />
+		<Label Text="{Binding Username}" />
+		<Label Text="{Binding Phone}" />
+		<Label Text="{Binding Email}" />
+		<Label Text="{Binding Website}" />
+	</StackLayout>
+</ContentPage>
