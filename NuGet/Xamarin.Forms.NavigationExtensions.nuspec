@@ -19,6 +19,6 @@
    </metadata>
    <files>
      <file src="..\Sources\NavigationExtensions\bin\Release\Xam.Forms.NavigationExtensions.dll" target="lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xam.Forms.NavigationExtensions.dll" />
-     <file src="..\Sources\NavigationExtensions.Standard\bin\Release\netstandard1.3\Xam.Forms.NavigationExtensions.dll" target="lib\netstandard1.3\Xam.Forms.NavigationExtensions.dll" />
+     <file src="..\Sources\Xamarin.Forms.NavigationExtensions.Standard\bin\Release\netstandard1.3\Xam.Forms.NavigationExtensions.dll" target="lib\netstandard1.3\Xam.Forms.NavigationExtensions.dll" />
    </files>
 </package>
