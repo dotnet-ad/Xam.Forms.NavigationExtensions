@@ -11,7 +11,6 @@ namespace Sample
 		{
 			Locator.Service = new WebService();
 
-
 			var tabbedPage = new TabbedPage();
 
 			tabbedPage.Children.Add(new NavigationPage(new AlbumsPage()) { Title="Albums" });

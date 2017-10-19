@@ -8,7 +8,7 @@
        <owners>Aloïs Deniel</owners>
      <licenseUrl>https://github.com/aloisdeniel/Xamarin.Forms.NavigationExtensions/blob/master/LICENSE</licenseUrl>
      <projectUrl>https://github.com/aloisdeniel/Xamarin.Forms.NavigationExtensions</projectUrl>
-     <iconUrl>https://github.com/aloisdeniel/Xamarin.Forms.NavigationExtensions/master/icon.png</iconUrl>
+     <iconUrl>https://raw.githubusercontent.com/aloisdeniel/Xamarin.Forms.NavigationExtensions/master/icon.png</iconUrl>
        <requireLicenseAcceptance>false</requireLicenseAcceptance>
        <description>Those extensions for Xamarin.Forms basicaly add storage of the navigation history when the application stops. Extensions has been prefered to subclassing for more flexibility.</description>
        <summary>Those extensions for Xamarin.Forms basicaly add storage of the navigation history when the application stops. Extensions has been prefered to subclassing for more flexibility.</summary>
