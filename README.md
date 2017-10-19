@@ -1,3 +1,5 @@
+![Logo](./icon.png)
+
 # NavigationExtensions for Xamarin.Forms
 
 Those extensions for **Xamarin.Forms** basicaly add storage of the navigation history when the application stops. Extensions has been prefered to subclassing for more flexibility.
