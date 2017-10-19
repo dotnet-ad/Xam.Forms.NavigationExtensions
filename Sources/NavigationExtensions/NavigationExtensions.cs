@@ -5,7 +5,6 @@
 	using System.Runtime.CompilerServices;
 	using System.Threading.Tasks;
 	using System.Linq;
-	using Newtonsoft.Json;
 	using Xamarin.Forms.NavigationExt;
 
 
@@ -64,8 +63,7 @@
 
 			if (Application.Current.Properties.ContainsKey(key))
 			{
-				var json = Application.Current.Properties[key] as string;
-				var states = JsonConvert.DeserializeObject<NavigationStates>(json);
+				var states = Application.Current.Properties[key] as NavigationStates;
 
 				if (DateTime.Now - states.Date < maximumRestoreSpan)
 				{
@@ -124,8 +122,7 @@
 				Modal = ConvertPages(navigation.ModalStack),
 			};
 
-			var json = JsonConvert.SerializeObject(states);
-			Application.Current.Properties[$"{StoreKeyPrefix}{name}"] = json;
+			Application.Current.Properties[$"{StoreKeyPrefix}{name}"] = states;
 		}
 
 		/// <summary>
