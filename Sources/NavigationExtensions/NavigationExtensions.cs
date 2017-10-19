@@ -41,7 +41,16 @@
 		/// <param name="args">Arguments.</param>
 		public static void SetNavigationArgs(this Page page, object args)
 		{
-			arguments.Add(page, args);
+            if(args != null)
+            {
+                object existing = null;
+                if (arguments.TryGetValue(page, out existing))
+                {
+                    arguments.Remove(page);
+                }
+
+                arguments.Add(page, args);
+            }
 		}
 
 		#endregion
